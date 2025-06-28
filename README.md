@@ -1,0 +1,2 @@
+# PasseiMonetizationKit
+Monetização e propaganda
