@@ -1,0 +1,22 @@
+{
+  "name": "PasseiMonetizationKit",
+  "version": "0.1.0",
+  "summary": "A short description of PasseiMonetizationKit.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/ziminny/PasseiMonetizationKit",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Vagner Reis": "ziminny@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/ziminny/PasseiMonetizationKit.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "16.0"
+  },
+  "source_files": "PasseiMonetizationKit/Classes/**/*"
+}

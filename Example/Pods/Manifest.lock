@@ -1,0 +1,16 @@
+PODS:
+  - PasseiMonetizationKit (0.1.0)
+
+DEPENDENCIES:
+  - PasseiMonetizationKit (from `../`)
+
+EXTERNAL SOURCES:
+  PasseiMonetizationKit:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  PasseiMonetizationKit: 98da052053c45b5594338add149328adfbd991e2
+
+PODFILE CHECKSUM: 7a723b094aefc80909089dbf1af99462d55e53b4
+
+COCOAPODS: 1.16.2
