@@ -14,9 +14,11 @@ public struct PremiumPageView: View {
     @StateObject private var store = PMKStoreFacade.shared.subscriptionService
     @Environment(\.dismiss) private var dismiss
     
+    private let imageName: String
     private var onTap: (Result<StoreKit.Transaction, Error>) -> Void
     
-    public init(onTap: @escaping (Result<StoreKit.Transaction, Error>) -> Void) {
+    public init(imageName: String, onTap: @escaping (Result<StoreKit.Transaction, Error>) -> Void) {
+        self.imageName = imageName
         self.onTap = onTap
     }
     
@@ -24,7 +26,7 @@ public struct PremiumPageView: View {
         GeometryReader { geometry in
             
             ZStack {
-                Image("presentation_bg")
+                Image(imageName)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: geometry.size.width)
@@ -66,64 +68,9 @@ public struct PremiumPageView: View {
                             .foregroundStyle(.white)
                             .underline()
                     }
-                    //.horizontalSpacing()
                     
                     Spacer()
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Vantagens")
-                            .font(.system(size: 20))
-                            .fontWeight(.bold)
-                            .foregroundStyle(.white)
-                        
-                        HStack {
-                            VStack(alignment: .leading, spacing: 16) {
-                                HStack {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundStyle(.green)
-                                    Text("Cronograma personalizado")
-                                        .foregroundStyle(.white)
-                                }
-                                
-                                HStack {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundStyle(.green)
-                                    Text("Até 10 simulados por mês")
-                                        .foregroundStyle(.white)
-                                }
-                                
-                                HStack {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundStyle(.green)
-                                    Text("Sem anúncios")
-                                        .foregroundStyle(.white)
-                                }
-                                
-                                HStack {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundStyle(.green)
-                                    Text("Questões por matéria ilimitado")
-                                        .foregroundStyle(.white)
-                                }
-                                
-                                HStack {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundStyle(.green)
-                                    Text("Acesso a e-books, mais de 10.000 páginas")
-                                        .foregroundStyle(.white)
-                                }
-                                
-                            }
-                            Spacer()
-                        }
-                        .fontWeight(.light)
-                        .font(.system(size: 20))
-                    }
-                    .padding()
-                    .background(.ultraThinMaterial.opacity(0.5))
-//                    .cornerRadius(16, corners: [.allCorners])
-//                    .horizontalSpacing()
-                    
+                    advantages()
                     Spacer()
                     
                     ScrollViewReader { proxy in
@@ -209,15 +156,71 @@ public struct PremiumPageView: View {
                         .foregroundStyle(.white)
                         .fontWeight(.medium)
                 }
-                
+                .padding(.horizontal)
             }
             
+            
         }
+    }
+    
+    private func advantages() -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Vantagens")
+                .font(.system(size: 20))
+                .fontWeight(.bold)
+                .foregroundStyle(.white)
+            
+            HStack {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("Cronograma personalizado")
+                            .foregroundStyle(.white)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("Até 10 simulados por mês")
+                            .foregroundStyle(.white)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("Sem anúncios")
+                            .foregroundStyle(.white)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("Questões por matéria ilimitado")
+                            .foregroundStyle(.white)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("Acesso a e-books, mais de 10.000 páginas")
+                            .foregroundStyle(.white)
+                    }
+                    
+                }
+                Spacer()
+            }
+            .fontWeight(.light)
+            .font(.system(size: 20))
+        }
+        .padding()
+        .background(.ultraThinMaterial.opacity(0.5))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
 
 #Preview {
-    PremiumPageView {_ in
+    PremiumPageView(imageName: "presentation_bg") {_ in
         
     }
 }
