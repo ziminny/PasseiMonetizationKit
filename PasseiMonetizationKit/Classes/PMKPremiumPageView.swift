@@ -88,7 +88,7 @@ public struct PMKPremiumPageView: View {
                             HStack(spacing: 8) {
                                 
                                 if PREVIEWS {
-                                    
+                                    #if DEBUG
                                     ForEach(Array(store.previewProducts.enumerated()), id: \.offset) { index, plan in
                                         VStack(spacing: 16) {
                                             
@@ -147,6 +147,7 @@ public struct PMKPremiumPageView: View {
                                         )
                                         .padding(.bottom)
                                     }
+                                    #endif
                                     
                                 } else {
                                     
