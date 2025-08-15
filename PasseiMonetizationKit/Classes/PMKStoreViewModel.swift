@@ -16,6 +16,11 @@ final public class PMKStoreViewModel: PMKSubscriptionServiceProtocol {
     @Published public private(set) var purchasedProductIDs: Set<String> = []
     @Published public private(set) var isPremiumUser = false
     
+    #if DEBUG
+    @MainActor
+    @Published public var previewProducts: [PreviewProducts] = []
+    #endif
+    
     public required init() {
         
     }
