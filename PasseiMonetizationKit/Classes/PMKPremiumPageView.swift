@@ -301,7 +301,7 @@ public struct PMKPremiumPageView: View {
 
 #Preview {
 #if DEBUG
-    PremiumPageView(imageName: "presentation_bg", previewType: .a) {_ in
+    PMKPremiumPageView(imageName: "presentation_bg", previewType: .a) {_ in
     }
 #endif
 }
