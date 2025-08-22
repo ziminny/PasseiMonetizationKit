@@ -25,8 +25,33 @@ final public class PMKStoreViewModel: PMKSubscriptionServiceProtocol {
         
     }
     
+    public func checkUserSubscriptionStatus(completion: (Result<Transaction, Error>) -> Void) async {
+        for await result in Transaction.updates {
+            do {
+                let transaction = try checkVerified(result)
+                // LIBERAR AQUI
+                completion(.success(transaction))
+                await transaction.finish()
+            } catch {
+                print("Transação inválida: \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
+        switch result {
+        case .unverified:
+            // Caso o resultado não seja verificado (assinatura inválida)
+            throw StoreError.failedVerification
+        case .verified(let signedType):
+            return signedType
+        }
+    }
+    
     public func fetchProducts(productNames: [String]) async throws {
         let storeProducts = try await Product.products(for: productNames)
+        print("AAA -->> \(productNames)")
         DispatchQueue.main.async {
             self.products = storeProducts
         }
@@ -71,10 +96,10 @@ final public class PMKStoreViewModel: PMKSubscriptionServiceProtocol {
             }
         }
         
-        DispatchQueue.main.async {
-            self.isPremiumUser = false
-        }
-        
     }
     
+}
+
+enum StoreError: Error {
+    case failedVerification
 }

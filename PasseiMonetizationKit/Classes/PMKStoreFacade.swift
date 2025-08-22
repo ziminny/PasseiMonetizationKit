@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import StoreKit
 
 public final class PMKStoreFacade {
     public static let shared = PMKStoreFacade()
@@ -21,6 +22,10 @@ public final class PMKStoreFacade {
     
     public func fetchProducts(productNames: [String]) async throws {
         try await subscriptionService.fetchProducts(productNames: productNames)
+    }
+    
+    public func checkUserSubscriptionStatus(completion: (Result<Transaction, Error>) -> Void) async {
+          await subscriptionService.checkUserSubscriptionStatus(completion: completion)
     }
 
     public var isPremium: Bool {
