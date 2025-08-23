@@ -9,62 +9,26 @@
 import Foundation
 import StoreKit
 
-final public class PMKStoreViewModel: PMKSubscriptionServiceProtocol {
+final internal class PMKStoreViewModel: @unchecked Sendable {
     
-    @MainActor
-    @Published public private(set) var products: [Product] = []
-    @Published public private(set) var purchasedProductIDs: Set<String> = []
-    @Published public private(set) var isPremiumUser = false
+    @Published var products: [Product] = []
     
-    #if DEBUG
-    @MainActor
-    @Published public var previewProducts: [PreviewProducts] = []
-    #endif
+    internal init() { }
     
-    public required init() {
-        
-    }
-    
-    public func checkUserSubscriptionStatus(completion: (Result<Transaction, Error>) -> Void) async {
-        for await result in Transaction.updates {
-            do {
-                let transaction = try checkVerified(result)
-                // LIBERAR AQUI
-                completion(.success(transaction))
-                await transaction.finish()
-            } catch {
-                print("Transação inválida: \(error)")
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
-        switch result {
-        case .unverified:
-            // Caso o resultado não seja verificado (assinatura inválida)
-            throw StoreError.failedVerification
-        case .verified(let signedType):
-            return signedType
-        }
-    }
-    
-    public func fetchProducts(productNames: [String]) async throws {
+    internal func fetchProducts(productNames: [String]) async throws {
         let storeProducts = try await Product.products(for: productNames)
-        print("AAA -->> \(productNames)")
         DispatchQueue.main.async {
             self.products = storeProducts
         }
     }
     
-    public func purchase(_ product: Product) async throws -> Transaction {
+    internal func purchase(_ product: Product) async throws -> Transaction {
         do {
             let result = try await product.purchase()
             switch result {
             case .success(let verification):
                 switch verification {
                 case .verified(let transaction):
-                    self.purchasedProductIDs.insert(transaction.productID)
                     await transaction.finish()
                     return transaction
                 case .unverified(_, let error):
@@ -82,23 +46,8 @@ final public class PMKStoreViewModel: PMKSubscriptionServiceProtocol {
         }
     }
     
-    public func refreshStatus() async {
-        
-        for await result in Transaction.currentEntitlements {
-            if case let .verified(transaction) = result {
-                if transaction.productType == .autoRenewable {
-                    if !transaction.isUpgraded {
-                        DispatchQueue.main.async {
-                            self.isPremiumUser = true
-                        }
-                    }
-                }
-            }
-        }
-        
-    }
-    
 }
+
 
 enum StoreError: Error {
     case failedVerification
