@@ -31,4 +31,10 @@ public final class PMKStoreFacade {
         return premiumCicleViewModel
     }
 
+    public func monetizationView(configuration: PMKUIConfiguration = PMKUIConfiguration()) -> some View {
+        PMKMonetizationView(
+            viewModel: self.premiumCicleViewModel,
+            configuration: configuration
+        )
+    }
 }
