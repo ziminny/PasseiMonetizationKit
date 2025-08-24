@@ -33,19 +33,39 @@ public struct PMKMonetizationView: View {
             // Lista de planos
             ScrollView(configuration.tierLayoutStyle == .horizontalScroll ? .horizontal : .vertical,
                        showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(viewModel.availableProducts, id: \.id) { product in
-                        VStack(spacing: 8) {
-                            Text(product.displayName)
-                                .font(Font(configuration.bodyFont))
-                                .foregroundColor(.white)
-                            Text(product.displayPrice)
-                                .font(Font(configuration.bodyFont))
-                                .foregroundColor(Color(configuration.secondaryColor))
+                Group {
+                    if configuration.tierLayoutStyle == .horizontalScroll {
+                        HStack(spacing: 12) {
+                            ForEach(viewModel.availableProducts, id: \.id) { product in
+                                VStack(spacing: 8) {
+                                    Text(product.displayName)
+                                        .font(Font(configuration.bodyFont))
+                                        .foregroundColor(.white)
+                                    Text(product.displayPrice)
+                                        .font(Font(configuration.bodyFont))
+                                        .foregroundColor(Color(configuration.secondaryColor))
+                                }
+                                .padding()
+                                .background(Color(configuration.primaryColor))
+                                .cornerRadius(configuration.buttonCornerRadius)
+                            }
                         }
-                        .padding()
-                        .background(Color(configuration.primaryColor))
-                        .cornerRadius(configuration.buttonCornerRadius)
+                    } else {
+                        VStack(spacing: 12) {
+                            ForEach(viewModel.availableProducts, id: \.id) { product in
+                                VStack(spacing: 8) {
+                                    Text(product.displayName)
+                                        .font(Font(configuration.bodyFont))
+                                        .foregroundColor(.white)
+                                    Text(product.displayPrice)
+                                        .font(Font(configuration.bodyFont))
+                                        .foregroundColor(Color(configuration.secondaryColor))
+                                }
+                                .padding()
+                                .background(Color(configuration.primaryColor))
+                                .cornerRadius(configuration.buttonCornerRadius)
+                            }
+                        }
                     }
                 }
             }
