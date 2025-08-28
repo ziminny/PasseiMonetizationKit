@@ -125,6 +125,7 @@ final public class PMKPremiumCicleViewModel: ObservableObject, @unchecked Sendab
                         DispatchQueue.main.async {
                             self.isUserPremium = true
                         }
+                        await self.delegate?.onChange(true)
                     }
                 }
             }
