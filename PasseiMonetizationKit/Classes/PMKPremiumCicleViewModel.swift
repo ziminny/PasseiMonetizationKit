@@ -118,18 +118,13 @@ final public class PMKPremiumCicleViewModel: ObservableObject, @unchecked Sendab
     
     public func refreshStatus() async {
         
-        for await result in Transaction.currentEntitlements {
-            if case let .verified(transaction) = result {
-                if transaction.productType == .autoRenewable {
-                    if !transaction.isUpgraded {
-                        DispatchQueue.main.async {
-                            self.isUserPremium = true
-                        }
-                        await self.delegate?.onChange(true)
-                    }
-                }
-            }
+        do {
+            try await AppStore.sync()
+            await checkForTransactions()
+        } catch {
+            debugPrint("Erro ao tentar restaurar:", error)
         }
+        
     }
     
 }
