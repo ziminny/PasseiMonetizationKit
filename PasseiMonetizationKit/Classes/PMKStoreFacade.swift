@@ -19,6 +19,10 @@ public final class PMKStoreFacade {
         return subscriptionService.products
     }
     
+    public func setStoreViewModelDelegate(_ delegate: ObservableSubscriptionStatusDelegate) {
+        subscriptionService.delegate = delegate
+    }
+    
     public func fetchProducts(productNames: [String]) async throws {
         return try await subscriptionService.fetchProducts(productNames: productNames)
     }

@@ -9,9 +9,16 @@
 import Foundation
 import StoreKit
 
+@MainActor
+public protocol ObservableSubscriptionStatusDelegate {
+    func onChange(_ isLoading: Bool, error: Error?) async
+}
+
 final internal class PMKStoreViewModel: @unchecked Sendable {
     
     @Published var products: [Product] = []
+    
+    var delegate: ObservableSubscriptionStatusDelegate?
     
     internal init() { }
     
@@ -23,6 +30,7 @@ final internal class PMKStoreViewModel: @unchecked Sendable {
     }
     
     internal func purchase(_ product: Product) async throws -> Transaction {
+        await delegate?.onChange(true, error: nil)
         do {
             let result = try await product.purchase()
             switch result {
@@ -30,18 +38,24 @@ final internal class PMKStoreViewModel: @unchecked Sendable {
                 switch verification {
                 case .verified(let transaction):
                     await transaction.finish()
+                    await delegate?.onChange(false, error: nil)
                     return transaction
                 case .unverified(_, let error):
+                    await delegate?.onChange(false, error: error)
                     throw PMKStoreKitError.unverified(error)
                 }
             case .userCancelled:
+                await delegate?.onChange(false, error: PMKStoreKitError.userCancelled)
                 throw PMKStoreKitError.userCancelled
             case .pending:
+                await delegate?.onChange(false, error: PMKStoreKitError.pending)
                 throw PMKStoreKitError.pending
             default:
+                await delegate?.onChange(false, error: PMKStoreKitError.unknown(NSError(domain: "unknown error", code: 10)))
                 throw PMKStoreKitError.unknown(NSError(domain: "unknown error", code: 10))
             }
         } catch {
+            await delegate?.onChange(false, error: error)
             throw PMKStoreKitError.unknown(error)
         }
     }

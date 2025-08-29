@@ -45,7 +45,6 @@ final public class PMKPremiumCicleViewModel: ObservableObject, @unchecked Sendab
     // Verificar status de assinatura
     public func verifySubscriptionStatus() async {
         isLoading = true
-        
         // Verificar todas as transações
         await checkForTransactions()
         
