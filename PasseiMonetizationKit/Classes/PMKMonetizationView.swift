@@ -19,81 +19,95 @@ public struct PMKMonetizationView: View {
     }
     
     public var body: some View {
-        VStack(spacing: 16) {
-            // Título principal
-            Text(configuration.titleText)
-                .font(Font(configuration.titleFont))
-                .foregroundColor(Color(configuration.primaryColor))
+        ZStack {
+            // Fundo com gradiente
+            LinearGradient(
+                colors: [configuration.primaryColor, configuration.secondaryColor],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
             
-            // Subtítulo
-            Text(configuration.subtitleText)
-                .font(Font(configuration.subtitleFont))
-                .foregroundColor(Color(configuration.secondaryColor))
-            
-            // Lista de planos
-            ScrollView(configuration.tierLayoutStyle == .horizontalScroll ? .horizontal : .vertical,
-                       showsIndicators: false) {
-                Group {
-                    if configuration.tierLayoutStyle == .horizontalScroll {
-                        HStack(spacing: 12) {
-                            ForEach(viewModel.availableProducts, id: \.id) { product in
-                                VStack(spacing: 8) {
-                                    Text(product.displayName)
-                                        .font(Font(configuration.bodyFont))
-                                        .foregroundColor(.white)
-                                    Text(product.displayPrice)
-                                        .font(Font(configuration.bodyFont))
-                                        .foregroundColor(Color(configuration.secondaryColor))
-                                }
-                                .padding()
-                                .background(Color(configuration.primaryColor))
-                                .cornerRadius(configuration.buttonCornerRadius)
-                            }
-                        }
-                    } else {
-                        VStack(spacing: 12) {
-                            ForEach(viewModel.availableProducts, id: \.id) { product in
-                                VStack(spacing: 8) {
-                                    Text(product.displayName)
-                                        .font(Font(configuration.bodyFont))
-                                        .foregroundColor(.white)
-                                    Text(product.displayPrice)
-                                        .font(Font(configuration.bodyFont))
-                                        .foregroundColor(Color(configuration.secondaryColor))
-                                }
-                                .padding()
-                                .background(Color(configuration.primaryColor))
-                                .cornerRadius(configuration.buttonCornerRadius)
-                            }
+            VStack(spacing: 20) {
+                // Ícone principal (estrela)
+                Image(systemName: "star.fill")
+                    .resizable()
+                    .frame(width: 80, height: 80)
+                    .foregroundColor(.yellow)
+                    .padding(.bottom, 8)
+                
+                // Título e subtítulo
+                Text(configuration.titleText)
+                    .font(Font(configuration.titleFont))
+                    .foregroundColor(.white)
+                
+                Text(configuration.subtitleText)
+                    .font(Font(configuration.subtitleFont))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white.opacity(0.85))
+                    .padding(.horizontal, 24)
+                
+                // Benefícios listados
+                VStack(spacing: 12) {
+                    ForEach(configuration.benefits, id: \.self) { benefit in
+                        HStack(alignment: .center, spacing: 8) {
+                            Image(systemName: "bolt.fill")
+                                .foregroundColor(.yellow)
+                            Text(benefit)
+                                .font(Font(configuration.bodyFont))
+                                .foregroundColor(.white)
+                                .multilineTextAlignment(.leading)
                         }
                     }
                 }
+                .padding()
+                .background(Color.white.opacity(0.15))
+                .cornerRadius(16)
+                
+                Spacer()
+                
+                // Botão de assinar
+                Button(action: {
+                    Task {
+                        if let product = viewModel.availableProducts.first {
+                            try? await PMKStoreFacade.shared.purchase(product)
+                        }
+                    }
+                }) {
+                    Text(configuration.subscribeButtonText)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color(configuration.buttonTextColor))
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.orange)
+                        .cornerRadius(configuration.buttonCornerRadius)
+                }
+                
+                // Botão de restaurar compras
+                Button(action: {
+                    Task {
+                        do {
+                            try? await PMKStoreFacade.shared.restorePurchases()
+                        } catch {
+                            print("Erro ao restaurar compras: \(error.localizedDescription)")
+                        }
+                    }
+                }) {
+                    Text("Restaurar Compras")
+                        .foregroundColor(Color(configuration.secondaryColor))
+                        .font(Font(configuration.bodyFont))
+                }
+                .padding(.top, 8)
+
+                
+                // Botão de dismiss
+                Button(configuration.dismissButtonText) {
+                    // Aqui o app pode fechar a tela, você pode expor via closure depois
+                }
+                .foregroundColor(.white.opacity(0.8))
+                .padding(.top, 8)
             }
-            .padding(.vertical, 8)
-            
-            // Botão de assinatura
-            Button(action: { /* Disparar compra */ }) {
-                Text(configuration.subscribeButtonText)
-                    .foregroundColor(Color(configuration.buttonTextColor))
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color(configuration.primaryColor))
-                    .cornerRadius(configuration.buttonCornerRadius)
-            }
-            
-            // Botão para restaurar compras
-            Button(action: { /* Restaurar compras */ }) {
-                Text(configuration.restoreButtonText)
-                    .foregroundColor(Color(configuration.secondaryColor))
-                    .font(Font(configuration.bodyFont))
-            }
+            .padding()
         }
-        .padding()
-        .background(Color(configuration.backgroundColor))
     }
-}
-
-
-#Preview {
-    PMKMonetizationView()
 }

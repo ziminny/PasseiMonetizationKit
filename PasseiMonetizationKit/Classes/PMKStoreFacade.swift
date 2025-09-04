@@ -27,6 +27,14 @@ public final class PMKStoreFacade {
         return try await subscriptionService.purchase(product)
     }
     
+    public func restorePurchases() async throws {
+        for await result in Transaction.currentEntitlements {
+            if case let .verified(transaction) = result {
+                await transaction.finish()
+            }
+        }
+    }
+    
     public func cicleViewModel() -> PMKPremiumCicleViewModel {
         return premiumCicleViewModel
     }

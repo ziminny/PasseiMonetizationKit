@@ -35,6 +35,8 @@ public struct PMKUIConfiguration {
     public var subtitleText: String
     public var subscribeButtonText: String
     public var restoreButtonText: String
+    public var dismissButtonText: String
+    public var benefits: [String]
     
     // MARK: - Inicializador com valores padrão
     public init(
@@ -51,6 +53,12 @@ public struct PMKUIConfiguration {
         subtitleText: String = "Escolha um plano que melhor se adapta a você",
         subscribeButtonText: String = "Assinar agora",
         restoreButtonText: String = "Restaurar compras"
+        dismissButtonText: String = "Talvez Depois",
+        benefits: [String] = [
+            "Responda simulados ilimitados e pratique sem parar.",
+            "Acesse recursos exclusivos e maximize seu desempenho.",
+            "Mais questões, mais aprendizado, mais resultados."
+        ]
     ) {
         self.primaryColor = primaryColor
         self.secondaryColor = secondaryColor
@@ -65,5 +73,7 @@ public struct PMKUIConfiguration {
         self.subtitleText = subtitleText
         self.subscribeButtonText = subscribeButtonText
         self.restoreButtonText = restoreButtonText
+        self.dismissButtonText = dismissButtonText
+        self.benefits = benefits
     }
 }
